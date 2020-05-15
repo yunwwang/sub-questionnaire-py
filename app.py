@@ -16,7 +16,7 @@ ITEM_EXTENSION = ['http://hl7.org/fhir/StructureDefinition/questionnaire-constra
 @app.route('/fhir/Questionnaire/<id>', methods=['GET'])
 def read(id):
     os.path.dirname(__file__)
-    f = open('store/' + id + '.json')
+    f = open('input/' + id + '.json')
     data = json.load(f)
     return data
 
@@ -34,7 +34,7 @@ def assemble(id):
 
 
 def loadQuestionnaire(id, isRoot, containedList, extensionList):
-    f = open('store/' + id + '.json')
+    f = open('input/' + id + '.json')
     data = json.load(f)
     q = Questionnaire(data)
 
