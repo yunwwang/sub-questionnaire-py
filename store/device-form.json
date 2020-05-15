@@ -1,0 +1,345 @@
+{
+  "resourceType": "Questionnaire",
+  "id": "device-form",
+  "name": "Device Request",
+  "extension": [
+    {
+      "url": "http://hl7.org/fhir/StructureDefinition/cqf-library",
+      "valueCanonical": "Library/Device-prepopulation"
+    }
+  ],
+  "title": "Device Reuest Questionnaire",
+  "status": "draft",
+  "date": "2020-04-09",
+  "subjectType": ["Patient"],
+  "contained": [
+    {
+      "resourceType": "ValueSet",
+      "id": "yesno",
+      "url": "#yesno",
+      "status": "draft",
+      "expansion": {
+        "timestamp": "2020-05-13",
+        "contains": [
+          {
+            "code": "Y",
+            "display": "Yes"
+          },
+          {
+            "code": "N",
+            "display": "No"
+          }
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "linkId": "1",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/sub-questionnaire",
+          "valueCanonical": "questionnaire/patient-info"
+        }
+      ],
+      "type": "display",
+      "text": "This is placeholder for Patient Information"
+    },
+    {
+      "linkId": "2",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/sub-questionnaire",
+          "valueCanonical": "questionnaire/practitioner-info"
+        }
+      ],
+      "type": "display",
+      "text": "This is placeholder for Practitioner Information"
+    },
+    {
+      "linkId": "3",
+      "text": "Encounter",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "3.1",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "language": "text/cql",
+                "expression": "\"DevicePrepopulation\".Today"
+              }
+            }
+          ],
+          "text": "Date of encounter (MM/DD/YYYY):",
+          "type": "date",
+          "required": true
+        },
+        {
+          "linkId": "3.2",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "language": "text/cql",
+                "expression": "\"DevicePrepopulation\".AnswerYes"
+              }
+            },
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "code": "radio-button",
+                    "system": "http://hl7.org/fhir/questionnaire-item-control"
+                  }
+                ]
+              }
+            }
+          ],
+          "text": "Is this an evaluation of the patient’s need for a ventilator?",
+          "required": true,
+          "type": "choice",
+          "answerValueSet": "#yesno",
+          "item": [
+            {
+              "linkId": "3.2a",
+              "extension": [
+                {
+                  "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                  "valueCodeableConcept": {
+                    "coding": [
+                      {
+                        "code": "radio-button",
+                        "system": "http://hl7.org/fhir/questionnaire-item-control"
+                      }
+                    ]
+                  }
+                }
+              ],
+              "text": "If Yes, type of evaluation",
+              "enableWhen": [
+                {
+                  "question": "3.2",
+                  "operator": "=",
+                  "answerCoding": {
+                    "code": "Y"
+                  }
+                }
+              ],
+              "type": "choice",
+              "required": true,
+              "answerOption": [
+                {
+                  "valueCoding": {
+                    "display": "initial"
+                  }
+                },
+                {
+                  "valueCoding": {
+                    "display": "re-evaluation"
+                  }
+                }
+              ],
+              "item": [
+                {
+                  "linkId": "3.3",
+                  "extension": [
+                    {
+                      "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+                      "valueCodeableConcept": {
+                        "coding": [
+                          {
+                            "code": "radio-button",
+                            "system": "http://hl7.org/fhir/questionnaire-item-control"
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "text": "If re-evaluation, is there evidence of continued use of the ventilator and accessories?",
+                  "enableWhen": [
+                    {
+                      "question": "3.2a",
+                      "operator": "=",
+                      "answerCoding": {
+                        "display": "re-evaluation"
+                      }
+                    }
+                  ],
+                  "type": "choice",
+                  "answerValueSet": "#yesno",
+                  "item": [
+                    {
+                      "linkId": "3.3a",
+                      "text": "Describe",
+                      "type": "text"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "linkId": "3.2b",
+              "text": "If No, purpose of the encounter",
+              "type": "text",
+              "required": true,
+              "enableWhen": [
+                {
+                  "question": "3.2",
+                  "operator": "=",
+                  "answerCoding": {
+                    "code": "N"
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "4",
+      "text": "Diagnoses",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "4.1",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "language": "text/cql",
+                "expression": "\"DevicePrepopulation\".RelevantDiagnoses"
+              }
+            }
+          ],
+          "text": "Patient Diagnoses related to need for a ventilator",
+          "type": "open-choice",
+          "required": true,
+          "repeats": true,
+          "answerOption": []
+        },
+        {
+          "linkId": "4.2",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/cqf-expression",
+              "valueExpression": {
+                "language": "text/cql",
+                "expression": "\"DevicePrepopulation\".OtherDiagnoses"
+              }
+            }
+          ],          
+          "text": "Other Diagnoses",
+          "type": "open-choice",
+          "repeats": true,
+          "answerOption": []
+        }
+      ]
+    },
+    {
+      "linkId": "5",
+      "text": "For continued coverage",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "5.1",
+          "extension": [
+            {
+              "url": "http://hl7.org/fhir/StructureDefinition/questionnaire-itemControl",
+              "valueCodeableConcept": {
+                "coding": [
+                  {
+                    "code": "radio-button",
+                    "system": "http://hl7.org/fhir/questionnaire-item-control"
+                  }
+                ]
+              }
+            }
+          ],
+          "text": "Demonstrated benefit from continued use?",
+          "type": "choice",
+          "answerValueSet": "#yesno"
+        },
+        {
+          "linkId": "5.2",
+          "text": "Describe",
+          "type": "text"
+        }
+      ]
+    },
+    {
+      "linkId": "9",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/sub-questionnaire",
+          "valueCanonical": "questionnaire/review-of-system"
+        }
+      ],
+      "type": "display",
+      "text": "This is placeholder for Review of System"
+    },
+    {
+      "linkId": "11",
+      "text": "Assessment and Plan",
+      "type": "group",
+      "item": [
+        {
+          "linkId": "11.1",
+          "text": "Assessment/Status",
+          "type": "text"
+        },
+        {
+          "linkId": "11.2",
+          "text": "Treatment Plan",
+          "type": "text"
+        },
+        {
+          "linkId": "11.3",
+          "text": "Orders",
+          "type": "group",
+          "item": [
+            {
+              "linkId": "11.3.1",
+              "text": "Medications",
+              "type": "text"
+            },
+            {
+              "linkId": "11.3.2",
+              "text": "Supplies",
+              "type": "text"
+            },
+            {
+              "linkId": "11.3.3",
+              "text": " Investigations / diagnostic testing",
+              "type": "text"
+            },
+            {
+              "linkId": "11.3.4",
+              "text": "Consults",
+              "type": "text"
+            },
+            {
+              "linkId": "11.3.5",
+              "text": "Other",
+              "type": "text"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "linkId": "12",
+      "extension": [
+        {
+          "url": "http://hl7.org/fhir/StructureDefinition/sub-questionnaire",
+          "valueCanonical": "questionnaire/provider-signature"
+        }
+      ],
+      "type": "display",
+      "text": "This is placeholder for Provider Signature"
+    }
+  ]
+}
