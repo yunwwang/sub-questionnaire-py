@@ -7,6 +7,8 @@ $assemble operation is proposed but not published yet.
 
 File structure:
 
+| name | description |
+| --- | --- |
 | app.py | main python app |
 | input | Questionnaires used to assemble questionnaire |
 | output | Assembled questionnaire |
