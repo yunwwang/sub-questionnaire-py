@@ -6,6 +6,6 @@ The dicussion can be found at https://jira.hl7.org/browse/FHIR-22356.
 $assemble operation is proposed but not published yet.
 
 File structure:
-app.py | main python app 
-input | Questionnaires used to assemble questionnaire
-output | Assembled questionnaire
+| app.py | main python app |
+| input | Questionnaires used to assemble questionnaire |
+| output | Assembled questionnaire |
