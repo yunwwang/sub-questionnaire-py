@@ -11,4 +11,4 @@ File structure:
 | --- | --- |
 | app.py | main python app |
 | input | Questionnaires used to assemble questionnaire |
-| output | Assembled questionnaire |
+| output | Questionnaires assembled |
